@@ -50,17 +50,6 @@ int main() {
 	}
 	cerr << sr/P << endl;
 
-	// vector<bool> okc(C, false);
-	// for(int c = 0; c < C; ++c) {
-	// 	bool ok = false;
-	// 	for(int s = 0; s < s2i.size(); ++s) if(skill[c][s]) {
-	// 		bool oui = true;
-	// 		for(int c2 = 0; c2 < C; ++c2) if(skill[c2][s] > skill[c][s]) oui = false;
-	// 		if(oui) ok = true;
-	// 	}
-	// 	okc[c] = ok;
-	// } 
-
 	int score = 0;
 	vector<pair<int, vector<int>>> sol;
 

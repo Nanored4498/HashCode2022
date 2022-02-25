@@ -56,7 +56,6 @@ int main() {
 	while(true) {
 		bool bad = true;
 		vector<int> fail;
-		sort(order.begin(), order.end(), [&](int a, int b) { return D[a]*req[a].size() < D[b]*req[b].size(); });
 		for(int p : order) {
 			int mav=0;
 			vector<int> cs(req[p].size(), 0), cs2, ro=cs;
