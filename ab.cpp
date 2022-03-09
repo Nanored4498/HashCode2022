@@ -56,6 +56,7 @@ int main() {
 	while(true) {
 		bool bad = true;
 		vector<int> fail;
+		sort(order.begin(), order.end(), [&](int a, int b) { return S[b]+B[b]-D[b] < S[a]+B[a]-D[a]; });
 		for(int p : order) {
 			int mav=0;
 			vector<int> cs(req[p].size(), 0), cs2, ro=cs;

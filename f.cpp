@@ -7,6 +7,7 @@
 #include <random>
 
 using namespace std;
+const int NS = 500;
 
 int main() {
 	ios::sync_with_stdio(false);
@@ -16,7 +17,7 @@ int main() {
 	cin >> C >> P;
 	vector<string> Cnames(C), Pnames(P);
 	unordered_map<string, int> s2i;
-	vector<array<int, 800>> skill(C);
+	vector<array<int, NS>> skill(C);
 	vector<int> ts(C, 0);
 	vector<vector<pair<int, int>>> req(P);
 	vector<int> D(P), S(P), B(P);
@@ -44,6 +45,7 @@ int main() {
 			req[p].emplace_back(s2i[s], l);
 		}
 	}
+	cerr << C << ' ' << P << ' ' << s2i.size() << endl;
 
 	int score = 0;
 	vector<pair<int, vector<int>>> sol;
@@ -52,17 +54,15 @@ int main() {
 	vector<int> order(P);
 	vector<bool> chosen(C, false);
 	iota(order.begin(), order.end(), 0);
-	mt19937 mt(42);
 	const auto ckey = [&](int c, int m, int s, int l) { return make_tuple(max(av[c], m), skill[c][s], ts[c]); };
 	while(true) {
 		bool bad = true;
 		vector<int> fail;
 		sort(order.begin(), order.end(), [&](int a, int b) { return D[a]*req[a].size() < D[b]*req[b].size(); });
-		// shuffle(order.begin(), order.end(), mt);
 		for(int p : order) {
 			int mav = 0;
 			vector<int> cs;
-			array<int, 800> ms; ms.fill(0);
+			array<int, NS> ms; ms.fill(0);
 			for(auto [s, l] : req[p]) {
 				int l0 = l;
 				if(ms[s] >= l) --l;
