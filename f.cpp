@@ -2,6 +2,7 @@
 #include <vector>
 #include <unordered_set>
 #include <unordered_map>
+#include <set>
 #include <numeric>
 #include <algorithm>
 #include <random>
@@ -48,10 +49,11 @@ int main() {
 			if(!s2i.count(s)) s2i[s] = s2i.size();
 			req[p].emplace_back(s2i[s], l);
 		}
-		if(req[p] == vector<pair<int, int>>(req[p].size(), req[p][0])) sameR.emplace_back(req[p][0].first, req[p][0].second, req[p].size(), S[p], D[p], B[p]);
+		set<pair<int, int>> sr(req[p].begin(), req[p].end());
+		if(sr.size() == 1) sameR.emplace_back(req[p][0].first, req[p][0].second, req[p].size(), S[p], D[p], B[p]);
 	}
-	// sort(sameR.begin(), sameR.end(), [&](auto x, auto y) { return double(get<3>(x))/double(get<4>(x)) < double(get<3>(y))/double(get<4>(y)); });
-	// for(auto [s, l, N, sc, d, b] : sameR) cerr << double(sc)/double(d) << " "; cerr << endl;
+	// sort(sameR.begin(), sameR.end(), [&](auto x, auto y) { return double(get<3>(x))/(double(get<2>(x))*double(get<4>(x))) < double(get<3>(y))/(double(get<2>(y))*double(get<4>(y))); });
+	// for(auto [s, l, N, sc, d, b] : sameR) cerr << 10*double(sc)/(double(d)*N) << " "; cerr << endl;
 	// for(auto [s, l, N, sc, d, b] : sameR) cerr << '(' << s << ", " << l << ", " << N << ", " << sc << ", " << d << ", " << b << ") "; cerr << endl;
 	cerr << C << ' ' << P << ' ' << s2i.size() << ' ' << sameR.size() << endl;
 
@@ -62,67 +64,51 @@ int main() {
 	vector<bool> chosen(C, false);
 	vector<int> av(C, 0);
 	iota(ps.begin(), ps.end(), 0);
-	mt19937 mt(42);
 	const auto ckey = [&](int c, int m, int s, int l) { return make_tuple(max(av[c], m), -min(av[c], m), skill[c][s], ts[c]); };
 	while(true) {
 		int bestP = -1, bestEnd = -1;
 		double bestScore = -1.;
 		vector<int> bestCS;
 		for(int p : ps) {
-			double bestScoreP = -10.;
-			int bestEndP = -1;
-			vector<int> cs(req[p].size(), 0), cs2;
-			vector<int> ro(req[p].size());
-			array<int, NS> ms;
-			iota(ro.begin(), ro.end(), 0);
-			for(int test = 0; test < 3; ++test) {
-				shuffle(ro.begin(), ro.end(), mt);
-				ms.fill(0);
-				int sav = 0, mav = 0, nr = req[p].size();
-				for(int o : ro) {
-					auto [s, l] = req[p][o];
-					const int l0 = l;
-					if(ms[s] >= l) --l;
-					int best = -1;
-					if(l) for(int c : s2c[s]) if(!chosen[c] && skill[c][s] >= l)
-						if(best == -1 || ckey(c, mav, s, l0) < ckey(best, mav, s, l0))
-							best = c;
-					if(!l) for(int c = 0; c < C; ++c) if(!chosen[c])
-						if(best == -1 || ckey(c, mav, s, l0) < ckey(best, mav, s, l0))
-							best = c;
-					if(best == -1) break;
-					--nr;
-					cs[o] = best;
-					for(int s : c2s[best]) ms[s] = max(ms[s], skill[best][s]);
-					chosen[best] = true;
-					sav += av[best];
-					mav = max(mav, av[best]);
-				}
-				for(int c : cs) chosen[c] = false;
-				if(nr) continue;
-				int end = mav+D[p];
-				double time = cs.size()*end - sav;
-				int sco = max(0, S[p] - max(0, end-B[p]));
-				double score = 1000. + double(sco) / time;
-				if(!sco) {
-					for(int i = 1; i < cs.size(); ++i) if(skill[cs[i]][req[p][i].first] > req[p][i].second)
-						for(int j = 0; j < i; ++j) if(skill[cs[j]][req[p][j].first] > req[p][j].second)
-							if(skill[cs[i]][req[p][j].first] >= req[p][j].second-1 && skill[cs[j]][req[p][i].first] >= req[p][i].second-1)
-								swap(cs[i], cs[j]);
-					int nblvlup = 0;
-					for(int i = 0; i < cs.size(); ++i) if(skill[cs[i]][req[p][i].first] <= req[p][i].second) ++nblvlup;
-					score = nblvlup / time;
-				}
-				if(score > bestScoreP) {
-					cs2 = cs;
-					bestScoreP = score;
-					bestEndP = end;
-				}
+			vector<int> cs; cs.reserve(req[p].size());
+			array<int, NS> ms; ms.fill(0);
+			int sav = 0, mav = 0;
+			for(auto [s, l] : req[p]) {
+				const int l0 = l;
+				if(ms[s] >= l) --l;
+				int best = -1;
+				if(l) for(int c : s2c[s]) if(!chosen[c] && skill[c][s] >= l)
+					if(best == -1 || ckey(c, mav, s, l0) < ckey(best, mav, s, l0))
+						best = c;
+				if(!l) for(int c = 0; c < C; ++c) if(!chosen[c])
+					if(best == -1 || ckey(c, mav, s, l0) < ckey(best, mav, s, l0))
+						best = c;
+				if(best == -1) break;
+				cs.push_back(best);
+				for(int s : c2s[best]) ms[s] = max(ms[s], skill[best][s]);
+				chosen[best] = true;
+				sav += av[best];
+				mav = max(mav, av[best]);
 			}
-			if(bestScoreP > bestScore) {
-				bestScore = bestScoreP;
-				bestEnd = bestEndP;
-				bestCS = move(cs2);
+			for(int c : cs) chosen[c] = false;
+			if(cs.size() < req[p].size()) continue;
+			int end = mav+D[p];
+			double time = cs.size()*end - sav;
+			int sco = max(0, S[p] - max(0, end-B[p]));
+			double score = 1000. + double(sco) / time;
+			if(!sco) {
+				for(int i = 1; i < cs.size(); ++i) if(skill[cs[i]][req[p][i].first] > req[p][i].second)
+					for(int j = 0; j < i; ++j) if(skill[cs[j]][req[p][j].first] > req[p][j].second)
+						if(skill[cs[i]][req[p][j].first] >= req[p][j].second-1 && skill[cs[j]][req[p][i].first] >= req[p][i].second-1)
+							swap(cs[i], cs[j]);
+				int nblvlup = 0;
+				for(int i = 0; i < cs.size(); ++i) if(skill[cs[i]][req[p][i].first] <= req[p][i].second) ++nblvlup;
+				score = nblvlup / time;
+			}
+			if(score > bestScore) {
+				bestScore = score;
+				bestEnd = end;
+				bestCS = move(cs);
 				bestP = p;
 			}
 		}
@@ -150,7 +136,7 @@ int main() {
 		while(ps[i] != bestP) ++ i;
 		ps[i] = ps.back();
 		ps.pop_back();
-		if(sol.size() > 3000) break;
+		if(sol.size() > 3200) break;
 	}
 
 	cerr << score << endl;

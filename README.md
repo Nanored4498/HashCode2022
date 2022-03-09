@@ -9,6 +9,6 @@ Solutions of the team Quiche LORIAinne ranked 31st at the end of the qualificati
 | C - Collaboration | 228971 | 242898 |
 | D - Dense schedule | 251751 | 2178519 |
 | E - Exceptional skills | 1640416 | 1648976 |
-| F - Find great mentors | 635791 | 866644 |
-| Total | 3654119 | 5940566 |
+| F - Find great mentors | 635791 | 884299 |
+| Total | 3654119 | 5958221 |
 | Rank | 31st | 1st |
