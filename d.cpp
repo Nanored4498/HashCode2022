@@ -63,7 +63,7 @@ int main() {
 		vector<vector<int>> sols(P);
 		vector<int> ends(P);
 		for(int p : ps) {
-			int beste = -1, besto = -1e9;
+			int beste = -1, besto = -1;
 			vector<int> cs(req[p].size(), 0), cs2;
 			vector<int> ro(req[p].size());
 			array<int, NS> ms;
@@ -100,8 +100,6 @@ int main() {
 							swap(cs[i], cs[j]);
 							oo += 2;
 						}
-				oo *= 100;
-				if(end >= B[p]+S[p]) oo -= 2000+D[p]*req[p].size();
 				if(oo > besto) {
 					besto = oo;
 					beste = end;
