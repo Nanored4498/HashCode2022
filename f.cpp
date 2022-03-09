@@ -38,6 +38,7 @@ int main() {
 			c2s[c].push_back(s2i[s]);
 		}
 	}
+	vector<tuple<int, int, int, int, int, int>> sameR;
 	for(int p = 0; p < P; ++p) {
 		int r;
 		cin >> Pnames[p] >> D[p] >> S[p] >> B[p] >> r;
@@ -47,8 +48,12 @@ int main() {
 			if(!s2i.count(s)) s2i[s] = s2i.size();
 			req[p].emplace_back(s2i[s], l);
 		}
+		if(req[p] == vector<pair<int, int>>(req[p].size(), req[p][0])) sameR.emplace_back(req[p][0].first, req[p][0].second, req[p].size(), S[p], D[p], B[p]);
 	}
-	cerr << C << ' ' << P << ' ' << s2i.size() << endl;
+	// sort(sameR.begin(), sameR.end(), [&](auto x, auto y) { return double(get<3>(x))/double(get<4>(x)) < double(get<3>(y))/double(get<4>(y)); });
+	// for(auto [s, l, N, sc, d, b] : sameR) cerr << double(sc)/double(d) << " "; cerr << endl;
+	// for(auto [s, l, N, sc, d, b] : sameR) cerr << '(' << s << ", " << l << ", " << N << ", " << sc << ", " << d << ", " << b << ") "; cerr << endl;
+	cerr << C << ' ' << P << ' ' << s2i.size() << ' ' << sameR.size() << endl;
 
 	int score = 0;
 	vector<pair<int, vector<int>>> sol;
@@ -66,7 +71,6 @@ int main() {
 		for(int p : ps) {
 			double bestScoreP = -10.;
 			int bestEndP = -1;
-			const int MAV = S[p]+B[p]-D[p];
 			vector<int> cs(req[p].size(), 0), cs2;
 			vector<int> ro(req[p].size());
 			array<int, NS> ms;
@@ -80,10 +84,10 @@ int main() {
 					const int l0 = l;
 					if(ms[s] >= l) --l;
 					int best = -1;
-					if(l) for(int c : s2c[s]) if(!chosen[c] && skill[c][s] >= l && av[c] < MAV)
+					if(l) for(int c : s2c[s]) if(!chosen[c] && skill[c][s] >= l)
 						if(best == -1 || ckey(c, mav, s, l0) < ckey(best, mav, s, l0))
 							best = c;
-					if(!l) for(int c = 0; c < C; ++c) if(!chosen[c] && av[c] < MAV)
+					if(!l) for(int c = 0; c < C; ++c) if(!chosen[c])
 						if(best == -1 || ckey(c, mav, s, l0) < ckey(best, mav, s, l0))
 							best = c;
 					if(best == -1) break;
@@ -98,7 +102,17 @@ int main() {
 				if(nr) continue;
 				int end = mav+D[p];
 				double time = cs.size()*end - sav;
-				double score = double(S[p] - max(0, end-B[p])) / time;
+				int sco = max(0, S[p] - max(0, end-B[p]));
+				double score = 1000. + double(sco) / time;
+				if(!sco) {
+					for(int i = 1; i < cs.size(); ++i) if(skill[cs[i]][req[p][i].first] > req[p][i].second)
+						for(int j = 0; j < i; ++j) if(skill[cs[j]][req[p][j].first] > req[p][j].second)
+							if(skill[cs[i]][req[p][j].first] >= req[p][j].second-1 && skill[cs[j]][req[p][i].first] >= req[p][i].second-1)
+								swap(cs[i], cs[j]);
+					int nblvlup = 0;
+					for(int i = 0; i < cs.size(); ++i) if(skill[cs[i]][req[p][i].first] <= req[p][i].second) ++nblvlup;
+					score = nblvlup / time;
+				}
 				if(score > bestScoreP) {
 					cs2 = cs;
 					bestScoreP = score;
@@ -136,6 +150,7 @@ int main() {
 		while(ps[i] != bestP) ++ i;
 		ps[i] = ps.back();
 		ps.pop_back();
+		if(sol.size() > 3000) break;
 	}
 
 	cerr << score << endl;
