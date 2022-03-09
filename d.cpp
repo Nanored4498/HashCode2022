@@ -87,6 +87,12 @@ int main() {
 				for(int c : cs) chosen[c] = false;
 				int end = mav+D[p];
 				if(nr || end >= B[p]+S[p]) continue;
+				for(int i = 1; i < cs.size(); ++i) if(skill[cs[i]][req[p][i].first] > req[p][i].second)
+					for(int j = 0; j < i; ++j) if(skill[cs[j]][req[p][j].first] > req[p][j].second)
+						if(skill[cs[i]][req[p][j].first] >= req[p][j].second-1 && skill[cs[j]][req[p][i].first] >= req[p][i].second-1) {
+							swap(cs[i], cs[j]);
+							oo += 2;
+						}
 				if(oo > besto) {
 					besto = oo;
 					beste = end;
@@ -95,7 +101,7 @@ int main() {
 			}
 			int end = beste;
 			if(cs2.empty()|| end >= B[p]+S[p]) {
-				if(end >= B[p]+S[p]) cerr << "TIME" << endl;
+				// if(end >= B[p]+S[p]) cerr << "TIME" << endl;
 				continue;
 			}
 			cs = cs2;
