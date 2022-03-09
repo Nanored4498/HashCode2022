@@ -135,9 +135,9 @@ int main() {
 		if(sc > score) {
 			score = sc;
 			sol = move(so);
+			cerr << score << ' ' << T << endl;
 		}
 	}
-	cerr << score << endl;
 	cout << sol.size() << endl;
 	for(const auto &[p, cs] : sol) {
 		cout << Pnames[p] << '\n';

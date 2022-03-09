@@ -22,8 +22,9 @@ int main() {
 	vector<vector<pair<int, int>>> req(P);
 	vector<int> D(P), S(P), B(P);
 	array<vector<int>, NS> s2c;
-	array<int, NS> sml; sml.fill(0);
 	vector<vector<int>> c2s(C);
+	array<int, NS> sml; sml.fill(0);
+	array<int, NS> rml; rml.fill(0);
 
 	for(int c = 0; c < C; ++c) {
 		int n, l; // n=1
@@ -46,6 +47,7 @@ int main() {
 			cin >> s >> l;
 			if(!s2i.count(s)) s2i[s] = s2i.size();
 			req[p].emplace_back(s2i[s], l);
+			rml[s2i[s]] = max(rml[s2i[s]], l);
 		}
 	}
 
@@ -59,9 +61,8 @@ int main() {
 	mt19937 mt(42);
 	const auto ckey = [&](int c, int m, int s, int l) { return make_tuple(max(av[c], m), -skill[c][s], ts[c]); };
 	while(true) {
-		int bestP = -1, bestlvlup = -1;
-		vector<vector<int>> sols(P);
-		vector<int> ends(P);
+		int bestP = -1, bestlvlup = -1, bestEnd = -1;
+		vector<int> bestCS;
 		for(int p : ps) {
 			int beste = -1, besto = -1;
 			vector<int> cs(req[p].size(), 0), cs2;
@@ -92,8 +93,8 @@ int main() {
 					mav = max(mav, av[best]);
 				}
 				for(int c : cs) chosen[c] = false;
-				int end = mav+D[p];
 				if(nr) continue;
+				int end = mav+D[p];
 				for(int i = 1; i < cs.size(); ++i) if(skill[cs[i]][req[p][i].first] > req[p][i].second)
 					for(int j = 0; j < i; ++j) if(skill[cs[j]][req[p][j].first] > req[p][j].second)
 						if(skill[cs[i]][req[p][j].first] >= req[p][j].second-1 && skill[cs[j]][req[p][i].first] >= req[p][i].second-1) {
@@ -107,34 +108,32 @@ int main() {
 				}
 			}
 			if(cs2.empty()) continue;
-			int end = beste;
-			cs = cs2;
-			ends[p] = end;
-			sols[p] = cs;
 			int lvlup = 0;
-			for(int i = 0; i < sols[p].size(); ++i) if(skill[sols[p][i]][req[p][i].first] <= req[p][i].second)
-				lvlup += 1 + skill[sols[p][i]][req[p][i].first];
+			for(int i = 0; i < cs2.size(); ++i) if(skill[cs2[i]][req[p][i].first] <= req[p][i].second)
+				lvlup += 1 + skill[cs2[i]][req[p][i].first];
 			if(lvlup > bestlvlup) {
 				bestlvlup = lvlup;
 				bestP = p;
+				bestCS = move(cs2);
+				bestEnd = beste;
 			}
 		}
 		if(bestP == -1) break;
-		score += max(0, S[bestP] - max(0, ends[bestP]-B[bestP]));
-		for(int i = 0; i < sols[bestP].size(); ++i) {
-			av[sols[bestP][i]] = ends[bestP];
+		score += max(0, S[bestP] - max(0, bestEnd-B[bestP]));
+		for(int i = 0; i < bestCS.size(); ++i) {
+			av[bestCS[i]] = bestEnd;
 			auto [s, l] = req[bestP][i];
-			if(skill[sols[bestP][i]][s] <= l) {
-				if(!skill[sols[bestP][i]][s]) {
-					s2c[s].push_back(sols[bestP][i]);
-					c2s[sols[bestP][i]].push_back(s);
+			if(skill[bestCS[i]][s] <= l) {
+				if(!skill[bestCS[i]][s]) {
+					s2c[s].push_back(bestCS[i]);
+					c2s[bestCS[i]].push_back(s);
 				}
-				++ skill[sols[bestP][i]][s];
-				++ ts[sols[bestP][i]];
-				sml[s] = max(sml[s], skill[sols[bestP][i]][s]);
+				++ skill[bestCS[i]][s];
+				++ ts[bestCS[i]];
+				sml[s] = max(sml[s], skill[bestCS[i]][s]);
 			}
 		}
-		sol.emplace_back(bestP, sols[bestP]);
+		sol.emplace_back(bestP, bestCS);
 		ps.erase(bestP);
 	}
 
