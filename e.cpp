@@ -53,10 +53,12 @@ int main() {
 	iota(order.begin(), order.end(), 0);
 	mt19937 mt;
 	const auto ckey = [&](int c, int m, int s) { return make_tuple(max(av[c], m), skill[c][s], ts[c]); };
+	bool need_lvl = false;
 	while(true) {
 		bool bad = true;
 		vector<int> fail;
-		sort(order.begin(), order.end(), [&](int a, int b) { return B[a]-D[a] < B[b]-D[b]; });
+		if(need_lvl) sort(order.begin(), order.end(), [&](int a, int b) { return S[a]+B[a]-D[a] > S[b]+B[b]-D[b]; });
+		else sort(order.begin(), order.end(), [&](int a, int b) { return B[a]-D[a] < B[b]-D[b]; });
 		for(int p : order) {
 			int mav = 0;
 			vector<int> cs;
@@ -75,23 +77,36 @@ int main() {
 			}
 			for(int c : cs) chosen[c] = false;
 			int end = mav+D[p];
-			if(cs.size() < req[p].size() || end >= B[p]+S[p]) {
+			if(cs.size() < req[p].size() || (!need_lvl && end >= B[p]+S[p])) {
 				fail.push_back(p);
 				continue;
 			}
-			score += S[p] - max(0, end-B[p]);
+			for(int i = 1; i < cs.size(); ++i) if(skill[cs[i]][req[p][i].first] > req[p][i].second)
+				for(int j = 0; j < i; ++j) if(skill[cs[j]][req[p][j].first] > req[p][j].second)
+					if(skill[cs[i]][req[p][j].first] >= req[p][j].second-1 && skill[cs[j]][req[p][i].first] >= req[p][i].second-1)
+						swap(cs[i], cs[j]);
+			bool impLvl = false;
 			for(int i = 0; i < cs.size(); ++i) {
 				av[cs[i]] = end;
 				auto [s, l] = req[p][i];
 				if(skill[cs[i]][s] <= l) {
 					++ skill[cs[i]][s];
 					++ ts[cs[i]];
+					impLvl = true;
 				}
 			}
+			if(need_lvl && !impLvl && end >= B[p]+S[p]) {
+				fail.push_back(p);
+				continue;
+			}
+			score += max(0, S[p] - max(0, end-B[p]));
 			sol.emplace_back(p, cs);
 			bad = false;
 		}
-		if(bad) break;
+		if(bad) {
+			if(need_lvl) break;
+			need_lvl = true;
+		}
 		order = fail;
 	}
 

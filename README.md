@@ -5,10 +5,10 @@ Solutions of the team Quiche LORIAinne ranked 31st at the end of the qualificati
 | Input | Score at end of contest | Score after contest |
 | --- | --- | --- |
 | A - An example | 33 | 33 |
-| B - Better start small | 897157 | 900479 |
-| C - Collaboration | 228971 | 233897 |
+| B - Better start small | 897157 | 1003496 |
+| C - Collaboration | 228971 | 242898 |
 | D - Dense schedule | 251751 | 2178519 |
-| E - Exceptional skills | 1640416 | 1640416 |
+| E - Exceptional skills | 1640416 | 1648976 |
 | F - Find great mentors | 635791 | 635791 |
-| Total | 3654119 | 5589135 |
+| Total | 3654119 | 5709713 |
 | Rank | 31st | 1st |
