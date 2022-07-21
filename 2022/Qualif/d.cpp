@@ -23,8 +23,6 @@ int main() {
 	vector<int> D(P), S(P), B(P);
 	array<vector<int>, NS> s2c;
 	vector<vector<int>> c2s(C);
-	array<int, NS> sml; sml.fill(0);
-	array<int, NS> rml; rml.fill(0);
 
 	for(int c = 0; c < C; ++c) {
 		int n, l; // n=1
@@ -36,7 +34,6 @@ int main() {
 		ts[c] += l;
 		s2c[s2i[s]].push_back(c);
 		c2s[c].push_back(s2i[s]);
-		sml[s2i[s]] = max(sml[s2i[s]], l);
 	}
 	cerr << C << ' ' << P << ' ' << s2i.size() << endl;
 	for(int p = 0; p < P; ++p) {
@@ -47,7 +44,6 @@ int main() {
 			cin >> s >> l;
 			if(!s2i.count(s)) s2i[s] = s2i.size();
 			req[p].emplace_back(s2i[s], l);
-			rml[s2i[s]] = max(rml[s2i[s]], l);
 		}
 	}
 
@@ -94,7 +90,6 @@ int main() {
 				}
 				for(int c : cs) chosen[c] = false;
 				if(nr) continue;
-				int end = mav+D[p];
 				for(int i = 1; i < cs.size(); ++i) if(skill[cs[i]][req[p][i].first] > req[p][i].second)
 					for(int j = 0; j < i; ++j) if(skill[cs[j]][req[p][j].first] > req[p][j].second)
 						if(skill[cs[i]][req[p][j].first] >= req[p][j].second-1 && skill[cs[j]][req[p][i].first] >= req[p][i].second-1) {
@@ -103,7 +98,7 @@ int main() {
 						}
 				if(oo > besto) {
 					besto = oo;
-					beste = end;
+					beste = mav+D[p];
 					cs2 = cs;
 				}
 			}
@@ -120,6 +115,7 @@ int main() {
 		}
 		if(bestP == -1) break;
 		score += max(0, S[bestP] - max(0, bestEnd-B[bestP]));
+		cerr << score << endl;
 		for(int i = 0; i < bestCS.size(); ++i) {
 			av[bestCS[i]] = bestEnd;
 			auto [s, l] = req[bestP][i];
@@ -130,7 +126,6 @@ int main() {
 				}
 				++ skill[bestCS[i]][s];
 				++ ts[bestCS[i]];
-				sml[s] = max(sml[s], skill[bestCS[i]][s]);
 			}
 		}
 		sol.emplace_back(bestP, bestCS);
@@ -138,15 +133,6 @@ int main() {
 	}
 
 	cerr << ps.size()<< endl;
-	for(int p : ps) {
-		for(auto [s, l] : req[p]) cerr << '(' << s << ", " << l << ", " << sml[s] << ") ";
-		cerr << endl;
-	}
-	for(int s = 0; s < NS; ++s) {
-		for(int c : s2c[s]) cerr << "(" << skill[c][s] << ", " << av[c] << ") ";
-		cerr << endl;
-	}
-	cerr << score << endl;
 	cout << sol.size() << endl;
 	for(const auto &[p, cs] : sol) {
 		cout << Pnames[p] << '\n';
