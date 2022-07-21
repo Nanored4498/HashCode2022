@@ -66,11 +66,11 @@ Solutions of the team Quiche LORIAinne.
 
 | Input | Score |
 | --- | --- |
-| A - An example | 60 |
-| B - Single arm | 1530065 |
-| C - Few arms | 1935214 |
-| D – Tight schedule | 1232022 |
-| E – Dense workspace | 524288 |
-| F – Decentralized | 840971 |
+| A - Example | 60 |
+| B - Narrow | 1530065 |
+| C - Urgent | 1935214 |
+| D – Typical | 1232022 |
+| E – Intriguing | 524288 |
+| F – Big | 840971 |
 | Total | 6062620 |
 | Rank | 7th |
