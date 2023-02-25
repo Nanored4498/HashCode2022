@@ -32,6 +32,19 @@ Solutions of the team Quiche LORIAinne.
 
 ## HashCode 2021
 
+### Qualification (not participant / just training)
+
+| Input | Score |
+| --- | --- |
+| A - An example | 2002 |
+| B - By the ocean | 4569081 |
+| C - Checkmate | 1308430 |
+| D – Daily commute | 2490364 |
+| E – Etoile | 724147 |
+| F – Forever jammed | 1264858 |
+| Total | 10358882 |
+| Rank | 12th |
+
 ### Final (not participant / just training)
 
 | Input | Score |
@@ -44,21 +57,6 @@ Solutions of the team Quiche LORIAinne.
 | F – Five Thousand | 120436518 |
 | Total | 275305718 |
 | Rank | 16th |
-
-<!-- ## HashCode 2020
-
-### Final (not participant / just training)
-
-| Input | Score |
-| --- | --- |
-| A - An example | 16 |
-| B - Single arm | 1070068 |
-| C - Few arms | 1123141 |
-| D – Tight schedule | 1396349 |
-| E – Dense workspace | 1088914 |
-| F – Decentralized | 1240096 |
-| Total | 275305718 |
-| Rank | 16th | -->
 
 ## HashCode 2019
 
