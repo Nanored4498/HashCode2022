@@ -1,8 +1,8 @@
 #include <iostream>
 #include <unordered_map>
-#include <unordered_set>
 #include <vector>
 #include <algorithm>
+#include <numeric>
 #include <functional>
 
 using namespace std;
@@ -46,8 +46,9 @@ int main() {
 	vector<pii> ans;
 	int score = 0;
 
-	vector<int> alli;
+	vi alli;
 	int ssc = 0;
+	bool partition_success = false;
 	for(Target &t : ts) {
 		vi count(C, 0), count2(C, 0), time(C, 0);
 		vi st = {t.i};
@@ -64,7 +65,7 @@ int main() {
 			time[i] += c[i];
 			if(count[i] > 1) time[i] += min(r[i], (count[i]-1)*c[i]);
 			for(int j : in[i]) {
-				time[j] = max(time[j], c[j]+time[i]);
+				time[j] = max(time[j], time[i]);
 				++ count2[j];
 				if(count2[j] == count[j]) st.push_back(j);
 			}
@@ -78,72 +79,47 @@ int main() {
 			++mm[in[i].size()];
 		}
 		for(auto [i, x] : mm) cerr << "(" << i << ":" << x << ") "; cerr << endl;
-		if(t.sc.size()==101 && c[t.sc[98]] == 13) {
-			cerr << t.sc.size() << ' ' << sc << ' ' << t.d << ' ' << t.g << endl;
-			for(int i : t.sc) cerr << c[i] << ' '; cerr << endl;
-
-			vector<vi> as;
+		if(t.sc.size()==101 && !partition_success) {
 			const int m = t.d-c[t.i]-1;
-			const auto comp = [&](int i, int j) { return c[i] < c[j]; };
-			function<bool(vector<int> &v, int s)> subsum;
-			subsum = [&](vector<int> &v, int s) {
-				if(v.empty()) return true;
-				int sc = 0;
-				for(int i : v) sc += c[i];
-				if(s*m < sc) return false;
-				const int mi = sc - (s-1)*m;
-				sort(v.begin(), v.end(), comp);
-				vector<tuple<int, vi, vi>> subs;
-				subs.emplace_back(c[v.back()], vi(), vi(1,v.back()));
-				for(int i0 = 0; i0+1 < v.size(); ++i0) {
-					const int i = v[i0];
-					const int ci = c[i];
-					decltype(subs) add;
-					for(int j = 0; j < subs.size();) {
-						auto &[su, w, u] = subs[j];
-						if(su+ci <= m) {
-							add.emplace_back(su+ci, w, u);
-							get<2>(add.back()).push_back(i);
-							w.push_back(i);
-							++ j;
-						} else {
-							w.insert(w.end(), v.begin()+i0, v.end()-1);
-							if(su >= mi && subsum(w, s-1)) {
-								as.emplace_back(move(u));
-								return true;
-							}
-							if(j+1 < subs.size()) subs[j] = move(subs.back());
-							subs.pop_back();
-						}
-					}
-					subs.insert(subs.end(), add.begin(), add.end());
+			int scs = -c[t.i];
+			for(int i : t.sc) scs += c[i];
+			cerr << t.sc.size() << ' ' << sc << ' ' << t.d << ' ' << t.g << ' ' << m << ' ' << S*m-scs << endl;
+			for(int i : t.sc) cerr << c[i] << ' '; cerr << endl;
+			vector<bool> used(100, false);
+			vector<vi> cs;
+			for(int i = 0; i < 100; ++i) if(!used[i]) {
+				cs.emplace_back(1, t.sc[i]);
+				used[i] = true;
+				vector<int> dp(m-c[t.sc[i]]+1, -1);
+				dp[0] = i;
+				for(int j = 0; j < 100; ++j) if(!used[j]) {
+					for(int x = m-c[t.sc[i]]; x >= c[t.sc[j]]; --x)
+						if(dp[x] == -1 && dp[x - c[t.sc[j]]] != -1)
+							dp[x] = j;
 				}
-				for(auto &[su, w, u] : subs) if(su >= mi && subsum(w, s-1)) {
-					as.emplace_back(move(u));
-					return true;
+				int x = m-c[t.sc[i]];
+				while(dp[x] == -1) --x;
+				while(x != 0) {
+					used[dp[x]] = true;
+					cs.back().push_back(t.sc[dp[x]]);
+					x -= c[t.sc[dp[x]]];
 				}
-				return false;
-			};
-			vi v = in[t.i];
-			cerr << "SUBSET_SUM" << endl;
-			subsum(v, S);
-			cerr << "SUCCES" << endl;
-			int s = 0, sa = 0;
-			for(auto &a : as) {
-				for(int i : a) servers0[s] += c[i];
-				cerr << a.size() << ' ' << servers0[s] << endl;
-				for(int i : a) ans.emplace_back(i, s);
-				sa += a.size();
-				++s;
 			}
-			cerr << "==> " << sa << endl;
-			ans.emplace_back(t.i, 0);
-			servers0[0] += c[t.i];
-			score += t.g;
+			cerr << "HHHHHHHH: " << cs.size() << endl;
+			if(cs.size() == S) {
+				partition_success = true;
+				for(int s = 0; s < S; ++s) {
+					for(int i : cs[s]) servers0[s] += c[i];
+					cerr << cs[s].size() << ' ' << servers0[s] << endl;
+					for(int i : cs[s]) ans.emplace_back(i, s);
+				}
+				ans.emplace_back(t.i, 0);
+				servers0[0] += c[t.i];
+				score += t.g;
+			}
 		}
 		alli.insert(alli.end(), t.sc.begin(), t.sc.end());
 	}
-	cerr << alli.size() << ' ' << unordered_set(alli.begin(), alli.end()).size() << endl;
 
 	for(int i = 0; i < ts.size();)
 		if(ts[i].sc.size() == 101) {
@@ -183,6 +159,8 @@ int main() {
 				return make_pair(t0, a);
 			};
 			for(int i : t.sc) {
+				int best_av = 1e9;
+				for(auto &a : av) best_av = min(best_av, a[i]);
 				int s = 0, t1 = 1e9;
 				vector<pii> aa;
 				for(int s2 = 0; s2 < S; ++s2) {
@@ -194,7 +172,7 @@ int main() {
 					}
 				}
 				const int t2 = t1 + c[i];
-				if(av[s][i] <= t2) continue;
+				if(best_av <= t2) continue;
 				av[s][i] = t2;
 				const int t3 = t2 + r[i];
 				for(auto &a : av) a[i] = min(a[i], t3);
@@ -210,7 +188,6 @@ int main() {
 			for(int tt : servers0) dt -= tt;
 			int gain = t.g + t.d - lastT;
 			double sc = 1e6 * gain / dt + 1e5 - dt;
-			if(t.sc.size() == 101) sc += 1e9;
 			if(sc > bestScore) {
 				bestT = itT;
 				bestScore = sc;
@@ -221,7 +198,7 @@ int main() {
 			}
 		}
 		if(bestT == ts.end()) break;
-		cerr << i2s[bestT->i] << ' ' << bestGain << ' ' << score << ' ' << bestT->sc.size() << endl;
+		cerr << i2s[bestT->i] << ' ' << score << ' ' << bestT->g+bestT->d-bestGain << '/' << bestT->d << " + " << bestT->g << endl;
 		if(bestT+1 != ts.end()) *bestT = move(ts.back());
 		ts.pop_back();
 		score += bestGain;

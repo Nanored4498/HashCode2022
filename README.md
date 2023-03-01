@@ -39,10 +39,10 @@ Solutions of the team Quiche LORIAinne.
 | A - An example | 2002 |
 | B - By the ocean | 4569829 |
 | C - Checkmate | 1313963 |
-| D - Daily commute | 2494612 |
+| D - Daily commute | 2498525 |
 | E - Etoile | 731591 |
 | F - Forever jammed | 1474439 |
-| Total | 10586401 |
+| Total | 10590349 |
 | Rank | 1st |
 
 ### Final (not participant / just training)
@@ -66,9 +66,9 @@ Solutions of the team Quiche LORIAinne.
 | --- | --- |
 | A - Example | 60 |
 | B - Narrow | 1530065 |
-| C - Urgent | 1935214 |
-| D - Typical | 1232022 |
+| C - Urgent | 1934841 |
+| D - Typical | 1250354 |
 | E - Intriguing | 524288 |
 | F - Big | 840971 |
-| Total | 6062620 |
+| Total | 6080579 |
 | Rank | 7th |
