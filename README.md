@@ -60,6 +60,20 @@ Solutions of the team Quiche LORIAinne.
 
 ## HashCode 2019
 
+Solutions of the team "TEAM TEAM". The code was bugged. After debugging at the end of the contest, we got the following scores
+
+### Qualification
+
+| Input | Score |
+| --- | --- |
+| A - Example | 3 |
+| B - Lovely landscapes | 212583 |
+| C - Memorable moments | 1752 |
+| D - Pet pictures | 426213 |
+| E - Shiny selfies | 445345 |
+| Total | 1085896 |
+| Rank | 26th |
+
 ### Final (not participant / just training)
 
 | Input | Score |
