@@ -1,11 +1,16 @@
+// Copyright (C) 2026, Coudert--Osmont Yoann
+// SPDX-License-Identifier: MIT
+// Licensed under the MIT License. See LICENSE file in the project root for full license information.
+
+#include <algorithm>
+#include <array>
 #include <iostream>
-#include <vector>
+#include <numeric>
+#include <random>
+#include <set>
 #include <unordered_set>
 #include <unordered_map>
-#include <set>
-#include <numeric>
-#include <algorithm>
-#include <random>
+#include <vector>
 
 using namespace std;
 const int NS = 500;

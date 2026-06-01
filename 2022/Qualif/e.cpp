@@ -1,10 +1,15 @@
-#include <iostream>
-#include <vector>
-#include <unordered_set>
-#include <unordered_map>
-#include <numeric>
+// Copyright (C) 2026, Coudert--Osmont Yoann
+// SPDX-License-Identifier: MIT
+// Licensed under the MIT License. See LICENSE file in the project root for full license information.
+
 #include <algorithm>
+#include <array>
+#include <iostream>
+#include <numeric>
 #include <random>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
 
 using namespace std;
 
