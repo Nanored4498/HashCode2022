@@ -13,8 +13,8 @@ Solutions of the team Quiche LORIAinne.
 | C - Collaboration | 228971 | 242898 |
 | D - Dense schedule | 251751 | 2178519 |
 | E - Exceptional skills | 1640416 | 1648976 |
-| F - Find great mentors | 635791 | 884299 |
-| Total | 3654119 | 5958221 |
+| F - Find great mentors | 635791 | 899143 |
+| Total | 3654119 | 5973065 |
 | Rank | 31st | 1st |
 
 ### Final
